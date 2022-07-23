@@ -127,7 +127,8 @@ static int rz_core_magic_at(RzCore *core, const char *file, ut64 addr, int depth
 		}
 		{
 			const char *searchprefix = rz_config_get(core->config, "search.prefix");
-			const char *flag = sdb_fmt("%s%d_%d", searchprefix, 0, kw_count++);
+			char s[64] = { 0 };
+			const char *flag = rz_strf(s, "%s%d_%d", searchprefix, 0, kw_count++);
 			rz_flag_set(core->flags, flag, addr + adelta, 1);
 		}
 		// TODO: This must be a callback .. move this into RSearch?
