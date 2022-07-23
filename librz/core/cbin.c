@@ -1070,7 +1070,8 @@ static ut8 bin_reloc_size(RzBinReloc *reloc) {
 
 static char *resolveModuleOrdinal(Sdb *sdb, const char *module, int ordinal) {
 	Sdb *db = sdb;
-	char *foo = sdb_get(db, sdb_fmt("%d", ordinal), 0);
+	char s[64] = { 0 };
+	char *foo = sdb_get(db, rz_strf(s, "%d", ordinal), 0);
 	return (foo && *foo) ? foo : NULL;
 }
 
@@ -3330,7 +3331,8 @@ static void flags_to_json(PJ *pj, int flags) {
 			if (flag_string) {
 				pj_s(pj, flag_string);
 			} else {
-				pj_s(pj, sdb_fmt("0x%08" PFMT64x, flag));
+				char s[64] = { 0 };
+				pj_s(pj, rz_strf(s, "0x%08" PFMT64x, flag));
 			}
 		}
 	}
@@ -4163,7 +4165,8 @@ static void bin_pe_versioninfo(RzCore *r, PJ *pj, int mode) {
 		pj_o(pj);
 	}
 	do {
-		char *path_version = sdb_fmt(format_version, num_version);
+		char s[64] = { 0 };
+		char *path_version = rz_strf(s, format_version, num_version);
 		if (!sdb_ns_path(r->sdb, path_version, 0)) {
 			break;
 		}
@@ -4172,7 +4175,7 @@ static void bin_pe_versioninfo(RzCore *r, PJ *pj, int mode) {
 		} else {
 			rz_cons_printf("# VS_FIXEDFILEINFO\n\n");
 		}
-		const char *path_fixedfileinfo = sdb_fmt("%s/fixed_file_info", path_version);
+		const char *path_fixedfileinfo = rz_strf(s, "%s/fixed_file_info", path_version);
 		if (!(sdb = sdb_ns_path(r->sdb, path_fixedfileinfo, 0))) {
 			if (IS_MODE_JSON(mode)) {
 				pj_end(pj);
@@ -4289,7 +4292,8 @@ static void bin_elf_versioninfo_versym(RzCore *r, PJ *pj, int mode) {
 	}
 
 	for (size_t i = 0; i < num_entries; i++) {
-		const char *const key = sdb_fmt("entry%zu", i);
+		char s[64] = { 0 };
+		const char *const key = rz_strf(s, "entry%zu", i);
 		const char *const value = sdb_const_get(sdb, key, 0);
 
 		if (!value) {
@@ -4347,7 +4351,8 @@ static void bin_elf_versioninfo_verneed(RzCore *r, PJ *pj, int mode) {
 		const char *filename = NULL;
 		int num_vernaux = 0;
 
-		char *path_version = sdb_fmt("bin/cur/info/versioninfo/verneed/version%zu", num_version);
+		char s[64] = { 0 };
+		char *path_version = rz_strf(s, "bin/cur/info/versioninfo/verneed/version%zu", num_version);
 		sdb = sdb_ns_path(r->sdb, path_version, 0);
 
 		if (!sdb) {
@@ -4384,7 +4389,7 @@ static void bin_elf_versioninfo_verneed(RzCore *r, PJ *pj, int mode) {
 		}
 
 		do {
-			const char *const path_vernaux = sdb_fmt("%s/vernaux%d", path_version, num_vernaux++);
+			const char *const path_vernaux = rz_strf(s, "%s/vernaux%d", path_version, num_vernaux++);
 
 			sdb = sdb_ns_path(r->sdb, path_vernaux, 0);
 			if (!sdb) {
@@ -4746,7 +4751,8 @@ RZ_API char *rz_core_bin_method_flags_str(ut64 flags, int mode) {
 				if (flag_string) {
 					pj_s(pj, flag_string);
 				} else {
-					pj_s(pj, sdb_fmt("0x%08" PFMT64x, flag));
+					char s[64] = { 0 };
+					pj_s(pj, rz_strf(s, "0x%08" PFMT64x, flag));
 				}
 			}
 		}
