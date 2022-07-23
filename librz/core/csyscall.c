@@ -5,7 +5,8 @@
 #include <rz_core.h>
 
 static const char *syscallNumber(int n) {
-	return sdb_fmt(n > 1000 ? "0x%x" : "%d", n);
+	char s[64] = { 0 };
+	return rz_strf(s, n > 1000 ? "0x%x" : "%d", n);
 }
 
 /**
