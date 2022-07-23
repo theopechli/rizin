@@ -1805,7 +1805,8 @@ static void annotated_hexdump(RzCore *core, const char *str, int len) {
 	if (!bytes)
 		goto err_bytes;
 #if 1
-	int addrpadlen = strlen(sdb_fmt("%08" PFMT64x, addr)) - 8;
+	char s[64] = { 0 };
+	int addrpadlen = strlen(rz_strf(s, "%08" PFMT64x, addr)) - 8;
 	char addrpad[32];
 	if (addrpadlen > 0) {
 		memset(addrpad, ' ', addrpadlen);
@@ -3320,7 +3321,8 @@ static bool cmd_print_blocks(RzCore *core, const char *input) {
 			break;
 		case 'h':
 			if ((block->flags) || (block->functions) || (block->comments) || (block->symbols) || (block->strings)) {
-				rz_table_add_rowf(t, "sddddd", sdb_fmt("0x%09" PFMT64x "", at), block->flags,
+				char s[64] = { 0 };
+				rz_table_add_rowf(t, "sddddd", rz_strf(s, "0x%09" PFMT64x "", at), block->flags,
 					block->functions, block->comments, block->symbols, block->strings);
 			}
 			break;
