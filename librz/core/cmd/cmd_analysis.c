@@ -2338,7 +2338,8 @@ RZ_IPI RzCmdStatus rz_analysis_syscall_show_handler(RzCore *core, int argc, cons
 }
 
 static const char *syscallNumber(int n) {
-	return sdb_fmt(n > 1000 ? "0x%x" : "%d", n);
+	char s[64] = { 0 };
+	return rz_strf(s, n > 1000 ? "0x%x" : "%d", n);
 }
 
 RZ_IPI RzCmdStatus rz_analysis_syscall_print_handler(RzCore *core, int argc, const char **argv, RzCmdStateOutput *state) {
