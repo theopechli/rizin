@@ -2662,7 +2662,8 @@ RZ_IPI int rz_cmd_debug(void *data, const char *input) {
 		case 's': // "dxs"
 			if (input[2]) {
 				char *str;
-				str = rz_core_cmd_str(core, sdb_fmt("gs %s", input + 2));
+				char s[64] = { 0 };
+				str = rz_core_cmd_str(core, rz_strf(s, "gs %s", input + 2));
 				rz_core_cmdf(core, "dx %s", str); //`gs %s`", input + 2);
 				free(str);
 			} else {
